@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["vite.config.ts"],
+  "compilerOptions": {
+    "composite": true,
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "outDir": "dist"
+  }
+}

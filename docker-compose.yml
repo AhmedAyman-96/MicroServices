@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  user-service:
+    build: ./user-service
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongodb:27017/blog-platform
+      - JWT_SECRET=your_jwt_secret_key_here
+      - PORT=5000
+    depends_on:
+      - mongodb
+
+  blog-service:
+    build: ./blog-service
+    ports:
+      - "5001:5001"
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongodb:27017/blog-platform
+      - JWT_SECRET=your_jwt_secret_key_here
+      - PORT=5001
+      - USER_SERVICE_URL=http://localhost:5000
+    depends_on:
+      - mongodb
+      - user-service
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_USER_URL=http://localhost:5000
+      - VITE_API_BLOG_URL=http://localhost:5001
+    depends_on:
+      - user-service
+      - blog-service
+
+volumes:
+  mongodb_data: 
